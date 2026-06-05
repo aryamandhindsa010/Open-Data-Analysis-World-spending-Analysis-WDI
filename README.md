@@ -18,6 +18,11 @@ The data provided my `WDI` is a great source as it is an aggregation of whole of
 | `README.md` | This file — describes the dataset, its origin, and how to use it |
 
 ---
+### Data-dictionary worksheets
+
+- raw —> The raw data pulled directly from the World Bank API, containing all 11 columns across 260+ countries from 2005–2025 before any filtering or transformation.
+- world_avg —> GDP-weighted global averages of military, health, and education spending aggregated by year into long format, used to produce the line chart.
+- latest_mil —> A single-row-per-country snapshot of the most recent available military spending figure for each country, used to colour the world map.
 
 ## Data Origin
 
