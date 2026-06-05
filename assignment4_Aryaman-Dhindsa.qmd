@@ -1,0 +1,190 @@
+---
+title: "Changing Government Budget allocation during current Geopolitical stance"
+subtitle: "Assignment 4 ETC5512"
+author: "Aryaman Dhindsa - 35683422"
+format: html
+bibliography: references.bib
+---
+
+::: panel-tabset
+<!-- Task 1 Tab: Data and Documenting -->
+
+
+## Question
+
+How much does the world governments spending changed during the current geopolitical events in comparison to the last 2 decades?
+
+*The world is currently divided into different ideologies such as during the mid-20th century and looking at budget allocation we can see where the future is headed as government spending shows the picture of future plans and preparations of countries*
+
+### Data Details
+
+The data provided my `WDI` is a great source as it is an aggregation of whole of the world government data that is available on economy, people, status and spending provided by the world Bank and is considered as the most reliable source. The API provided in R i.e. `package(WDI)` is a quick way to get all the needed variables without having to download the data.
+
+#### Data Metadata
+
+The analysis uses data obtained from the World Bank's World Development Indicators (WDI) database. Data are accessed programmatically through the `WDI` package in R, which provides an interface to the World Bank Data API.
+
+| Attribute | Description |
+|------------|------------|
+| **Dataset** | World Development Indicators (WDI)[@wdicite] |
+| **Source** | World Bank Group |
+| **Access Method** | World Bank Data API accessed through the `WDI` package in R |
+| **Geographic Coverage** | 260+ countries, territories, and regional aggregates |
+| **Granularity** | National level |
+| **Temporal Coverage** | 1960–2025 |
+| **Frequency** | Annual |
+| **Update Frequency** | Quarterly (April, July, September, December) |
+| **Regularly Updated** | Yes |
+| **Languages Available** | Arabic, English, French, Chinese, Spanish |
+| **License** | Creative Commons Attribution 4.0 International (CC BY 4.0) |
+| **First Published** | 1 April 2005 |
+| **Last Updated** | 8 April 2026 |
+
+#### Information
+
+All the variables and other variable related data information is provided in `Data-dictionary.xlsx` present in the data folder.
+
+All other information related to author, modified date and all other project related information is present in the `README.md` file in the data folder.
+
+#### Data 
+
+Getting the packages ready[@tidyverse] of R[@r] and loading the API for world development indicators[@worldbankapi].
+```{r setup}
+#| warning: false
+#| error: false
+#| echo: false
+#| message: false
+
+# Install packages if not already installed
+if (!requireNamespace("WDI", quietly = TRUE)) install.packages("WDI")
+if (!requireNamespace("tidyverse", quietly = TRUE)) install.packages("tidyverse")
+if (!requireNamespace("maps", quietly = TRUE)) install.packages("maps")
+if (!requireNamespace("viridis", quietly = TRUE)) install.packages("viridis")
+if (!requireNamespace("scales", quietly = TRUE)) install.packages("scales")
+
+library(WDI)
+library(tidyverse)
+library(maps)
+library(viridis)
+library(scales)
+```
+Getting the required variables as needed for analysis:
+```{r data}
+#| cache: true
+
+indicators <- c(
+  mil_gdp    = "MS.MIL.XPND.GD.ZS",
+  edu_gdp    = "SE.XPD.TOTL.GD.ZS",
+  health_gdp = "SH.XPD.GHED.GD.ZS",
+  gdp_usd    = "NY.GDP.MKTP.CD"
+)
+
+raw <- WDI(
+  country   = "all",
+  indicator = indicators,
+  start     = 2005,
+  end       = 2025,
+  extra     = TRUE
+)
+
+countries <- raw |>
+  filter(region != "Aggregates", !is.na(iso2c))
+
+world_avg <- countries |>
+  # drop rows where gdp_usd is NA so weighted.mean never gets an all-NA weight vector
+  filter(!is.na(gdp_usd)) |>
+  group_by(year) |>
+  summarise(
+    Military   = weighted.mean(mil_gdp,    gdp_usd, na.rm = TRUE),
+    Health     = weighted.mean(health_gdp, gdp_usd, na.rm = TRUE),
+    Education  = weighted.mean(edu_gdp,    gdp_usd, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols      = c(Military, Health, Education),
+    names_to  = "sector",
+    values_to = "pct_gdp"
+  )
+
+latest_mil <- countries |>
+  filter(!is.na(mil_gdp)) |>
+  group_by(country, iso2c) |>
+  slice_max(year, n = 1) |>
+  ungroup() |>
+  select(country, iso2c, year, mil_gdp)
+```
+
+
+
+
+::: {#refs}
+:::
+
+<!-- Task 2 Tab: Writing your blogpost -->
+
+## Blog post
+
+## Why to Look at the Budgets?
+
+Budget allocation is the most important aspect to examine if we want to understand the future plans of a country. Where governments choose to spend — on guns or schools, on missiles or medicines — is not merely an accounting decision. It is a statement of intent, a map of fears and ambitions, and a portrait of the world order that those in power are preparing for.
+
+The last two decades have given us two fundamentally different eras of government spending. The 2000s and early 2010s were broadly a period of globalisation optimism — governments invested in healthcare systems, education, and social infrastructure. Then came the fractures: Russia's annexation of Crimea in 2014, a global pandemic in 2020, a full-scale land war in Europe in 2022, and a grinding conflict in the Middle East from 2023 onward. The budgets that followed tell a story of a world that no longer feels safe.
+
+- **Military expenditure** — as a share of GDP and in current USD (`MS.MIL.XPND.GD.ZS`, `MS.MIL.XPND.CD`)
+- **Government health expenditure** — as a share of GDP (`SH.XPD.GHED.GD.ZS`)
+- **Public spending on education** — as a share of GDP (`SE.XPD.TOTL.GD.ZS`)
+
+Taken together, these three sectors reveal the essential tension in every national budget: how much to invest in security versus the people it is meant to protect.
+
+```{r line-chart}
+#| warning: false
+#| message: false
+#| fig-cap: "GDP-weighted global average government spending by sector (% of GDP), 2000–2023. Source: World Bank WDI."
+
+ggplot(world_avg, aes(x = year, y = pct_gdp, colour = sector)) +
+  geom_line(linewidth = 1.2, na.rm = TRUE) +
+  geom_point(size = 1.8, na.rm = TRUE) +
+  scale_colour_manual(
+    values = c("Military" = "#C0392B", "Health" = "#2980B9", "Education" = "#27AE60")
+  ) +
+  labs(
+    title   = "Military vs. Social Spending (2000–2023)",
+    x       = NULL,
+    y       = "% of GDP",
+    colour  = "Sector",
+    caption = "Source: World Bank WDI"
+  ) +
+
+  labs(
+    title    = "The Great Reallocation: Military vs. Social Spending (2000–2023)",
+    subtitle = "GDP-weighted world average — Military spending inflects upward after 2014, while social investment stagnates",
+    x        = NULL,
+    y        = "% of GDP",
+    caption  = "Source: World Bank WDI (MS.MIL.XPND.GD.ZS · SH.XPD.GHED.GD.ZS · SE.XPD.TOTL.GD.ZS)"
+  )+
+  theme_minimal()
+```
+
+::: {#refs}
+:::
+
+<!-- Task 3 Tab: Behind the Scenes -  -->
+
+## Behind the Scenes
+
+### What's in this section
+
+Here is where you should tell us about your reflection on your analysis (Task 3).
+
+Again, these are the details about **your** perspective and the gritty details behind the scenes of your analysis.
+
+## AI acknowledgement
+
+1. I used AI for research about the dataset variables.
+2. Used AI for code improvement
+3. Used AI for new insights.
+
+::: {#refs}
+:::
+
+:::
