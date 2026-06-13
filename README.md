@@ -89,6 +89,8 @@ It is an aggregation of publicly available data from the governments all across 
 
 ### Limitation
 
+- Data is missing for a few variables so getting a comparison analysis is not possible at some places.
+
 - The governments do not provide the right figures and consider giving the wrong data for security reasons.
 
 - The data of WDI is only Macro and do not have regional data of countries so there is no possibility of in-depth provisional or state-wise analysis of a country.
