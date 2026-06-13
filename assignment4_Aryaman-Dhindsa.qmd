@@ -9,14 +9,14 @@ bibliography: references.bib
 ::: panel-tabset
 <!-- Task 1 Tab: Data and Documenting -->
 
-
-## Question
+## Data Details
+### Question
 
 How much does the world governments spending changed during the current geopolitical events in comparison to the last 2 decades?
 
 *The world is currently divided into different ideologies such as during the mid-20th century and looking at budget allocation we can see where the future is headed as government spending shows the picture of future plans and preparations of countries*
 
-### Data Details
+### Data
 
 The data provided my `WDI` is a great source as it is an aggregation of whole of the world government data that is available on economy, people, status and spending provided by the world Bank and is considered as the most reliable source. The API provided in R i.e. `package(WDI)` is a quick way to get all the needed variables without having to download the data.
 
@@ -42,13 +42,13 @@ The analysis uses data obtained from the World Bank's World Development Indicato
 
 #### Information
 
-All the variables and other variable related data information is provided in `Data-dictionary.xlsx` present in the data folder.
+All the variables and other variable related data information is provided in `Data-dictionary.xlsx` present in the *data* folder.
 
-All other information related to author, modified date and all other project related information is present in the `README.md` file in the data folder.
+All other information related to author, modified date and all other project related information including licence, limitations, data privacy is present in the `README.md` file.
 
 #### Data 
 
-Getting the packages ready[@tidyverse] of R[@r] and loading the API for world development indicators[@worldbankapi].
+Getting the package *Tidyverse*[@tidyverse] ready of R[@r] and loading the API for world development indicators[@worldbankapi].
 ```{r setup}
 #| warning: false
 #| error: false
@@ -61,12 +61,16 @@ if (!requireNamespace("tidyverse", quietly = TRUE)) install.packages("tidyverse"
 if (!requireNamespace("maps", quietly = TRUE)) install.packages("maps")
 if (!requireNamespace("viridis", quietly = TRUE)) install.packages("viridis")
 if (!requireNamespace("scales", quietly = TRUE)) install.packages("scales")
+if (!requireNamespace("kableExtra", quietly = TRUE)) install.packages("kableExtra")
+if (!requireNamespace("maps", quietly = TRUE)) install.packages("maps")
 
 library(WDI)
 library(tidyverse)
 library(maps)
 library(viridis)
 library(scales)
+library(kableExtra)
+library(maps)
 ```
 Getting the required variables as needed for analysis:
 ```{r data}
@@ -95,6 +99,7 @@ world_avg <- countries |>
   filter(!is.na(gdp_usd)) |>
   group_by(year) |>
   summarise(
+    # wieghted mean is used to scale the budgets and spending means for rich and poor countries or big or small countries.
     Military   = weighted.mean(mil_gdp,    gdp_usd, na.rm = TRUE),
     Health     = weighted.mean(health_gdp, gdp_usd, na.rm = TRUE),
     Education  = weighted.mean(edu_gdp,    gdp_usd, na.rm = TRUE),
@@ -113,9 +118,12 @@ latest_mil <- countries |>
   ungroup() |>
   select(country, iso2c, year, mil_gdp)
 ```
-
-
-
+Sample of each dataset:
+```{r}
+raw |> head(5) |> kable()
+world_avg |> head(5) |> kable()
+latest_mil |> head(5) |> kable()
+```
 
 ::: {#refs}
 :::
@@ -124,21 +132,27 @@ latest_mil <- countries |>
 
 ## Blog post
 
-## Why to Look at the Budgets?
+### Why to Look at the Budgets?
 
 Budget allocation is the most important aspect to examine if we want to understand the future plans of a country. Where governments choose to spend — on guns or schools, on missiles or medicines — is not merely an accounting decision. It is a statement of intent, a map of fears and ambitions, and a portrait of the world order that those in power are preparing for.
 
+### What does main segments of budget tells about the current geopolitical conditions?
+
 The last two decades have given us two fundamentally different eras of government spending. The 2000s and early 2010s were broadly a period of globalisation optimism — governments invested in healthcare systems, education, and social infrastructure. Then came the fractures: Russia's annexation of Crimea in 2014, a global pandemic in 2020, a full-scale land war in Europe in 2022, and a grinding conflict in the Middle East from 2023 onward. The budgets that followed tell a story of a world that no longer feels safe.
 
-- **Military expenditure** — as a share of GDP and in current USD (`MS.MIL.XPND.GD.ZS`, `MS.MIL.XPND.CD`)
-- **Government health expenditure** — as a share of GDP (`SH.XPD.GHED.GD.ZS`)
-- **Public spending on education** — as a share of GDP (`SE.XPD.TOTL.GD.ZS`)
+The other conclusion is that *The need to spend in Health and Military seems to be more important as for survival than investing in Education for future prosperity.*
+
+- **Military expenditure** — as a share of GDP and in current USD
+- **Government health expenditure** — as a share of GDP
+- **Public spending on education** — as a share of GDP
 
 Taken together, these three sectors reveal the essential tension in every national budget: how much to invest in security versus the people it is meant to protect.
 
 ```{r line-chart}
 #| warning: false
 #| message: false
+#| echo: false
+#| lable: spending-by-section
 #| fig-cap: "GDP-weighted global average government spending by sector (% of GDP), 2000–2023. Source: World Bank WDI."
 
 ggplot(world_avg, aes(x = year, y = pct_gdp, colour = sector)) +
@@ -160,13 +174,40 @@ ggplot(world_avg, aes(x = year, y = pct_gdp, colour = sector)) +
     subtitle = "GDP-weighted world average — Military spending inflects upward after 2014, while social investment stagnates",
     x        = NULL,
     y        = "% of GDP",
-    caption  = "Source: World Bank WDI (MS.MIL.XPND.GD.ZS · SH.XPD.GHED.GD.ZS · SE.XPD.TOTL.GD.ZS)"
+    caption  = "Source: World Bank WDI"
   )+
   theme_minimal()
 ```
+The @spending-by-section gives us an overview that the investments in health have increased whereas the budget for education decreased by a lot. The important thing to notice here is the consistent increase in military spending after 2021. The war of Ukraine and Russia started in Feburay 2022.
 
-::: {#refs}
-:::
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| fig-width: 9
+#| label: fig-region-spending
+#| fig-cap: "Government spending by region as % of GDP (2005–2025). Source: World Bank WDI."
+
+region_avg <- countries |>
+  filter(!is.na(gdp_usd)) |>
+  group_by(region, year) |>
+  summarise(
+    Military  = weighted.mean(mil_gdp, gdp_usd, na.rm = TRUE),
+    Health    = weighted.mean(health_gdp, gdp_usd, na.rm = TRUE),
+    Education = weighted.mean(edu_gdp, gdp_usd, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  pivot_longer(c(Military, Health, Education), names_to = "sector", values_to = "pct_gdp")
+
+ggplot(region_avg, aes(year, pct_gdp, colour = sector)) +
+  geom_line(na.rm = TRUE) +
+  facet_wrap(~region) +
+  theme_minimal()
+```
+As shown in @fig-region-spending, military spending in the Middle East, North Africa, Afghanistan & Pakistan region rises sharply toward the end of the series, climbing from roughly 3-4% of GDP to nearly 7.5%, following an earlier surge around 2014-2015 to approximately 6% that likely coincided with regional conflicts in Syria and Yemen. The most recent spike plausibly reflects the escalation of conflict in the Middle East from 2023 onward.
+By contrast, @fig-region-spending shows North America moving in the opposite direction on social spending: health expenditure falls from its 2020 pandemic-driven peak of around 10.5% of GDP to roughly 8%, while education spending declines even more steeply, from about 5% to under 2% in the final year. Military spending in North America also dips slightly at the end of the period.
+Taken together, the figure suggests a reallocation of priorities — as the Middle East region increases military investment amid active conflict, North America appears to be drawing down both pandemic-era health spending and education funding. However, the sharp final-year drops in the North America panel may partly reflect provisional or incomplete data for the most recent year, so this should be treated as a preliminary observation pending confirmation with updated figures.
+
 
 <!-- Task 3 Tab: Behind the Scenes -  -->
 
@@ -178,13 +219,10 @@ Here is where you should tell us about your reflection on your analysis (Task 3)
 
 Again, these are the details about **your** perspective and the gritty details behind the scenes of your analysis.
 
-## AI acknowledgement
+### AI acknowledgement
 
 1. I used AI for research about the dataset variables.
 2. Used AI for code improvement
 3. Used AI for new insights.
-
-::: {#refs}
-:::
 
 :::
