@@ -59,6 +59,8 @@ or a single package
 library(tidyverse) 
 ```
 
+### Meta Data
+
 | Attribute | Description |
 |------------|------------|
 | **Dataset** | World Development Indicators (WDI)[@wdicite] |
@@ -96,3 +98,4 @@ It is an aggregation of publicly available data from the governments all across 
 - Countries that do not acknowledge the world bank as the world's bank are not included.
 
 - The data for unacknowledged countries is limited or not present.
+(All this limitations are considered after assuming that there are no bias due to the amount of funding received by World bank by a particular country. These biases are common as from a geopolitical standpoint.)
