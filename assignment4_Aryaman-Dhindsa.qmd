@@ -226,7 +226,7 @@ top10 <- c("United States", "China", "Russian Federation", "United Kingdom",
            "France", "Germany", "Japan", "India", "South Korea", "Israel")
 
 top10_mil <- countries |>
-  filter(country %in% top10, year > 2020, !is.na(mil_gdp))
+  filter(country %in% top10, year > 2005, year < 2023, !is.na(mil_gdp))
 
 ggplot(top10_mil, aes(year, mil_gdp, colour = country)) +
   geom_line(linewidth = 1) +
@@ -235,7 +235,7 @@ ggplot(top10_mil, aes(year, mil_gdp, colour = country)) +
        x = NULL, y = "% of GDP") +
   theme_minimal()
 ```
-The @fig-top10-military shows that the 2 countries out 10 worlds most powerful countries increased their military spending in the last 5 years due to the wars they are in[@wikipedia_russo_ukrainian_war_2026]. Rest all are constant except Japan. Japan shows a slight increase in military budget due to its new policy of investing in its national weapon industries for defense[@reuters_japan_defence_2022].
+As shown in @fig-top10-military, defense spending as a percentage of GDP has shifted notably for a few key nations over the last five years. Driven by active conflicts, the Russian Federation shows a sharp spike starting in 2021, while Israel—which consistently holds the highest baseline on the chart—also ticks upward at the end of the period. Conversely, the United States shows a gradual decline, while Japan maintains a very low but slightly increasing trajectory due to its updated defense policies. Spending for the remaining nations, including China, France, Germany, India, and the United Kingdom, has remained largely constant.
 
 ### Health
 
@@ -248,7 +248,7 @@ The @fig-top10-military shows that the 2 countries out 10 worlds most powerful c
 #| fig-cap: "Government health expenditure (% of GDP) for the world's top 10 most powerful countries, 2021–2025. Source: World Bank WDI."
 
 top10_health <- countries |>
-  filter(country %in% top10, year > 2020, !is.na(health_gdp))
+  filter(country %in% top10, year > 2005, year < 2023, !is.na(health_gdp))
 
 ggplot(top10_health, aes(year, health_gdp, colour = country)) +
   geom_line(linewidth = 1) +
@@ -260,7 +260,7 @@ ggplot(top10_health, aes(year, health_gdp, colour = country)) +
 :::{.callout-note}
 Data is not available post 2023 for some countries on health.
 :::
-The @fig-top10-health shows a general decline or flattening in health expenditure across most of the top 10 powers after their pandemic-era peaks, with the United States, Germany, and France easing back from elevated 2021 levels as emergency COVID-19 spending wound down. Russia and China remain at comparatively lower levels relative to their economic size, consistent with their prioritisation of military expenditure over healthcare investment during this period. Japan and South Korea, facing ageing populations, maintain relatively high and stable health spending despite the broader downward trend elsewhere.
+The @fig-top10-health shows the United States, United Kingdom, Germany, and France clustering at elevated levels, peaking sharply toward the end of the series before the US and UK ease back, while Germany and France remain comparatively stable. Japan shows a steady upward climb throughout, ending as the highest spender. Russia and Israel show a sharp late spike, with Israel falling back afterward. China and India remain consistently low relative to the other powers, with China showing gradual growth and India staying nearly flat — both well below their economic and military significance, consistent with their relative prioritisation of defense over healthcare investment.
 
 ### Conclusion
 
@@ -272,11 +272,21 @@ This pattern indicates that NATO countries are progressively reallocating budget
 
 ## Behind the Scenes
 
-### What's in this section
+### Question-5 
 
-Here is where you should tell us about your reflection on your analysis (Task 3).
+*Tell us about parts of your data processing or analysis that weren’t “sexy” and wouldn’t typically be included in a blog post. (e.g. Was their any data drudgery or time intensive wrangling? Were there any repetitive tasks or manual tasks? If it was easy, describe what made it easy?)*
 
-Again, these are the details about **your** perspective and the gritty details behind the scenes of your analysis.
+### Question-6
+
+*Were there any challenges that you faced in conducting this analysis. These may take the form of data limitations or coding challenges? (e.g. Was there anything in your analysis that you were not anticipating when you started? Did you have to change your intended scope? Did you need to master a new skill? Were there any problems you were proud of solving?)*
+
+### Question-7
+
+*Tell us about any imperfect parts of your work and how you would like to expand or improve this analysis in future? Be clear about any limitations or aspects of your analysis that fell beyond scope.*
+
+### Question-8
+
+*Tell us about how you used AI in your approach to your assignment. (e.g. Was AI consistently reliable? Did you provide AI with additional context? Was there anywhere where you questioned or verified the AI outputs? Was there anywhere we AI helped you learn something new?)*
 
 ### AI acknowledgement
 
