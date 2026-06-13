@@ -276,24 +276,34 @@ This pattern indicates that NATO countries are progressively reallocating budget
 
 *Tell us about parts of your data processing or analysis that weren’t “sexy” and wouldn’t typically be included in a blog post. (e.g. Was their any data drudgery or time intensive wrangling? Were there any repetitive tasks or manual tasks? If it was easy, describe what made it easy?)*
 
+Merging datasets from different sources is a notorious headache in data science, especially when it comes to country nomenclature. A primary hurdle in generating world data visualizations like @fig-top10-military involves reconciling disparate naming conventions between R's maps package and the World Bank’s World Development Indicators (WDI).
+
+For instance, a country seamlessly recognized as "Bahamas" in the mapping geometry is designated as "Bahamas, The" within the WDI repository. Because these exact string matches fail behind the scenes, the corresponding spatial data often drops entirely from the final visualization. Due to the sheer volume of these inconsistencies and the tedious, manual string cleaning required to bridge the two packages, standardizing every mismatched nation was bypassed in this iteration. Consequently, the analysis focuses strictly on the major global powers cleanly supported by both data frameworks, ensuring a reliable visualization of military spending trends without letting minor syntax discrepancies stall the core pipeline.
+
 ### Question-6
 
 *Were there any challenges that you faced in conducting this analysis. These may take the form of data limitations or coding challenges? (e.g. Was there anything in your analysis that you were not anticipating when you started? Did you have to change your intended scope? Did you need to master a new skill? Were there any problems you were proud of solving?)*
+
+A significant data limitation emerged regarding temporal availability: while military expenditure data extended reliably into recent years, comprehensive global metrics for health and education spending were unavailable after 2023. This unexpected data lag made it impossible to conduct a synchronized, up-to-date comparative analysis across all three sectors for the final years of the timeline. Consequently, the scope was refined to prioritize the most current defense trends for major global powers where data was robust, highlighting how geopolitical events—rather than a full suite of social indicators—shaped recent budgetary shifts.
 
 ### Question-7
 
 *Tell us about any imperfect parts of your work and how you would like to expand or improve this analysis in future? Be clear about any limitations or aspects of your analysis that fell beyond scope.*
 
+While the current visualization effectively captures defense spending trends for major global powers, it remains imperfect due to data integration limits that restricted its scope. In the future, I want to expand this analysis to focus on specific high-conflict regions—particularly the immediate neighbors of Russia and Israel—to evaluate if and how surrounding geopolitical instability impacts regional military budgets.
+
+The primary limitation preventing this deeper dive was the syntax mismatch between R's maps package and the World Development Indicators (WDI) data. Because smaller neighboring countries often suffered from mismatched nomenclature (e.g., failing to join properly during data merging), manually resolving every string discrepancy fell beyond the immediate scope of this iteration.
+
+To improve this work, a crucial next step will be implementing a robust data-cleaning pipeline—utilizing tools like the countrycode package in R—to standardize all country names into ISO codes. Resolving these coding hurdles will allow the analysis to transition from a broad, macro-level overview of global superpowers to a precise, localized study on how regional conflicts alter the economic and defensive priorities of bordering nations.
+
 ### Question-8
 
 *Tell us about how you used AI in your approach to your assignment. (e.g. Was AI consistently reliable? Did you provide AI with additional context? Was there anywhere where you questioned or verified the AI outputs? Was there anywhere we AI helped you learn something new?)*
 
-### AI acknowledgement
+Throughout this assignment, AI served as an iterative collaborator, primarily assisting with technical execution, dataset research, and code optimization. By leveraging AI to write, debug, and streamline complex R code, I was able to automate repetitive programming tasks. This significantly shifted my focus away from syntax troubleshooting and allowed me to dedicate more time to critical analysis, logical structuring, and interpreting the underlying geopolitical trends.
 
-1. I used AI for research about the dataset variables.
-2. Used AI for code improvement
-3. Used AI for new insights.
-4. Used AI for coding to focus on critical analysis and logical thinking.
+However, the AI was not blindly trusted. While it was highly reliable for optimizing code blocks, I consistently provided it with additional context—such as specific dataset schemas—and actively verified its outputs against the raw World Development Indicators (WDI) data to ensure accuracy. Beyond just code generation, the AI helped me learn new methodologies, offering fresh insights into how to structure a comparative analysis and suggest data-cleaning workflows. By treating AI as a tool for efficiency rather than a substitute for critical thought, I was able to deepen my understanding of the data while maintaining strict analytical accuracy.
+
 Link of Claude: [here](https://claude.ai/share/1056a064-0a9b-4ffa-8c94-af537c88094d)
 link of ChatGPT: [here](https://chatgpt.com/share/6a2cd6cf-e904-83ec-86dc-a082650d373e)
 
