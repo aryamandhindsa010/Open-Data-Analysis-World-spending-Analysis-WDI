@@ -152,7 +152,7 @@ Taken together, these three sectors reveal the essential tension in every nation
 #| warning: false
 #| message: false
 #| echo: false
-#| lable: spending-by-section
+#| label: fig-spending-by-section
 #| fig-cap: "GDP-weighted global average government spending by sector (% of GDP), 2000–2023. Source: World Bank WDI."
 
 ggplot(world_avg, aes(x = year, y = pct_gdp, colour = sector)) +
@@ -178,8 +178,9 @@ ggplot(world_avg, aes(x = year, y = pct_gdp, colour = sector)) +
   )+
   theme_minimal()
 ```
-The @spending-by-section gives us an overview that the investments in health have increased whereas the budget for education decreased by a lot. The important thing to notice here is the consistent increase in military spending after 2021. The war of Ukraine and Russia started in Feburay 2022.
+The @fig-spending-by-section gives us an overview that the investments in health have increased whereas the budget for education decreased by a lot. The important thing to notice here is the consistent increase in military spending after 2021. The war of Ukraine and Russia started in Feburay 2022[@wikipedia_russo_ukrainian_war_2026].
 
+Now lets look as per the regions to get a more clear understanding of the situation:
 ```{r}
 #| warning: false
 #| message: false
@@ -208,6 +209,66 @@ As shown in @fig-region-spending, military spending in the Middle East, North Af
 By contrast, @fig-region-spending shows North America moving in the opposite direction on social spending: health expenditure falls from its 2020 pandemic-driven peak of around 10.5% of GDP to roughly 8%, while education spending declines even more steeply, from about 5% to under 2% in the final year. Military spending in North America also dips slightly at the end of the period.
 Taken together, the figure suggests a reallocation of priorities — as the Middle East region increases military investment amid active conflict, North America appears to be drawing down both pandemic-era health spending and education funding. However, the sharp final-year drops in the North America panel may partly reflect provisional or incomplete data for the most recent year, so this should be treated as a preliminary observation pending confirmation with updated figures.
 
+As estimated pre-analysis conclusion, it can be stated that mostly the changes can be seen in *Health* and *Defense*.So, lets look at them in detail fro the top 10 most powerful countries. Why? Because they are most influential countries in the world and their decisions have a big impact on other nations worldwide.
+
+### Defense
+**There are many wars going on around the world but only a few have an impact that can shake world order**
+Budget increment by these countries can be a key indicator as they are already powerful enough to protect themselves from low or medium profile wars. But if they still increasing their budget, It can be a key insight as to know about the world order.
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| fig-width: 9
+#| label: fig-top10-military
+#| fig-cap: "Military expenditure (% of GDP) for the world's top 10 most powerful countries, 2021–2025. Source: World Bank WDI."
+
+
+top10 <- c("United States", "China", "Russian Federation", "United Kingdom",
+           "France", "Germany", "Japan", "India", "South Korea", "Israel")
+
+top10_mil <- countries |>
+  filter(country %in% top10, year > 2020, !is.na(mil_gdp))
+
+ggplot(top10_mil, aes(year, mil_gdp, colour = country)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(title = "Military Spending (% of GDP) — Top 10 Powers, Post-2020",
+       x = NULL, y = "% of GDP") +
+  theme_minimal()
+```
+The @fig-top10-military shows that the 2 countries out 10 worlds most powerful countries increased their military spending in the last 5 years due to the wars they are in[@wikipedia_russo_ukrainian_war_2026]. Rest all are constant except Japan. Japan shows a slight increase in military budget due to its new policy of investing in its national weapon industries for defense[@reuters_japan_defence_2022].
+
+### Health
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| fig-width: 9
+#| label: fig-top10-health
+#| fig-cap: "Government health expenditure (% of GDP) for the world's top 10 most powerful countries, 2021–2025. Source: World Bank WDI."
+
+top10_health <- countries |>
+  filter(country %in% top10, year > 2020, !is.na(health_gdp))
+
+ggplot(top10_health, aes(year, health_gdp, colour = country)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(title = "Health Spending (% of GDP) — Top 10 Powers, Post-2020",
+       x = NULL, y = "% of GDP") +
+  theme_minimal()
+```
+:::{.callout-note}
+Data is not available post 2023 for some countries on health.
+:::
+The @fig-top10-health shows a general decline or flattening in health expenditure across most of the top 10 powers after their pandemic-era peaks, with the United States, Germany, and France easing back from elevated 2021 levels as emergency COVID-19 spending wound down. Russia and China remain at comparatively lower levels relative to their economic size, consistent with their prioritisation of military expenditure over healthcare investment during this period. Japan and South Korea, facing ageing populations, maintain relatively high and stable health spending despite the broader downward trend elsewhere.
+
+### Conclusion
+
+Looking at both the figures(@fig-top10-health and @fig-top10-military), military spending increasing primarily for countries directly engaged in conflict—Russia, and Middle Eastern nations—while remaining largely constant elsewhere, including most of Asia. Health spending, however, declined notably across European nations, Israel, and the USA, even as Asian countries like Japan and South Korea maintained stable levels. This divergence suggests that active warfare drives immediate defense reallocation, but its fiscal strain—particularly the wind-down of pandemic-era health investment—is felt more broadly across Western nations regardless of direct involvement, while Asian economies appear more insulated, maintaining steadier social spending priorities despite the shifting global security landscape
+
+This pattern indicates that NATO countries are progressively reallocating budgets toward defense, while non-engaged nations elsewhere maintain steady spending priorities. It suggests Western countries are responding to instability in their neighbourhood by preparing for potential future conflicts, reflecting a broader sense of unrest across Europe and the Middle East.
 
 <!-- Task 3 Tab: Behind the Scenes -  -->
 
@@ -224,5 +285,9 @@ Again, these are the details about **your** perspective and the gritty details b
 1. I used AI for research about the dataset variables.
 2. Used AI for code improvement
 3. Used AI for new insights.
+4. Used AI for coding to focus on critical analysis and logical thinking.
+Link of Claude: [here](https://claude.ai/share/1056a064-0a9b-4ffa-8c94-af537c88094d)
+link of ChatGPT: [here](https://chatgpt.com/share/6a2cd6cf-e904-83ec-86dc-a082650d373e)
 
+The link to the repository is [here](https://github.com/aryamandhindsa010/Open-Data-Analysis-World-spending-Analysis-WDI.git)
 :::
