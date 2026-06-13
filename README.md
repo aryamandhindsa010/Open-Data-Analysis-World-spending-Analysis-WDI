@@ -79,9 +79,9 @@ library(tidyverse)
 
 ### Licencing
 
-Data were obtained from the World Bank Indicators API [@worldbankapi] and are licensed under CC BY 4.0 [@ccby40].
+Data were obtained from the World Bank Indicators API and are licensed under CC BY 4.0 [@ccby40].
 
-The Creative Commons Attribution 4.0 International license[@ccby40] allows users to copy, modify and distribute data in any format for any purpose, including commercial use.
+The Creative Commons Attribution 4.0 International license allows users to copy, modify and distribute data in any format for any purpose, including commercial use.
 
 ### Data Privacy
 
